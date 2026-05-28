@@ -1,0 +1,120 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}Importar / Exportar CSV — Biblioteca Digital{% endblock %}
+
+{% block content %}
+
+<div class="d-flex align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1" style="color:#1a2a5e;">
+            <i class="bi bi-file-earmark-spreadsheet-fill me-2"></i>Gestión de CSV
+        </h1>
+        <p class="text-muted mb-0">Importa o exporta el catálogo en formato CSV</p>
+    </div>
+</div>
+
+<div class="row g-4">
+
+    <!-- ── Importar ── -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header py-3" style="background:linear-gradient(135deg,#1a2a5e,#3a5a9b); color:white;">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-upload me-2"></i>Importar desde CSV</h5>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted mb-4">
+                    Sube un archivo <code>.csv</code> para añadir libros en bloque. El archivo debe tener cabecera con los campos indicados.
+                </p>
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-file-earmark-text me-1"></i>Archivo CSV
+                        </label>
+                        {{ form.csv_file }}
+                        {% if form.csv_file.errors %}
+                        <div class="text-danger small mt-1">{{ form.csv_file.errors.0 }}</div>
+                        {% endif %}
+                        <div class="form-text">Solo archivos .csv. Codificación UTF-8.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-cloud-upload-fill me-2"></i>Importar libros
+                    </button>
+                </form>
+
+                <!-- Formato esperado -->
+                <div class="mt-4 p-3 rounded-3" style="background:#f8f9ff; border:1px dashed #b0c0e8;">
+                    <p class="fw-semibold small mb-2 text-primary">
+                        <i class="bi bi-info-circle me-1"></i>Formato esperado (cabecera):
+                    </p>
+                    <code class="small d-block" style="font-size:.78rem; color:#c0392b;">
+                        titulo, autor, descripcion, genero, anio_publicacion, isbn, disponible
+                    </code>
+                    <p class="small text-muted mt-2 mb-0">
+                        El campo <strong>disponible</strong> acepta: <em>si / no / true / false / 1 / 0</em><br>
+                        El campo <strong>genero</strong> acepta: ficcion, no_ficcion, ciencia, historia, biografia, fantasia, terror, romance, infantil, otro
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Exportar ── -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header py-3" style="background:linear-gradient(135deg,#1d6a3e,#2d9a5e); color:white;">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-download me-2"></i>Exportar a CSV</h5>
+            </div>
+            <div class="card-body p-4 d-flex flex-column">
+                <p class="text-muted mb-4">
+                    Descarga el catálogo completo en formato <code>.csv</code>. El archivo incluye todos los campos y la fecha de alta.
+                </p>
+
+                <div class="p-3 rounded-3 mb-4" style="background:#f0faf5; border:1px dashed #7ecaa0;">
+                    <p class="fw-semibold small mb-2" style="color:#1d6a3e;">
+                        <i class="bi bi-file-earmark-check me-1"></i>Columnas del archivo exportado:
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for campo in "titulo,autor,descripcion,genero,anio_publicacion,isbn,disponible,fecha_creacion"|split:"," %}
+                        <span class="badge" style="background:#d4edda; color:#155724;">{{ campo }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mt-auto">
+                    <a href="{% url 'export_csv' %}" class="btn btn-success w-100 fw-semibold">
+                        <i class="bi bi-file-earmark-arrow-down-fill me-2"></i>Descargar CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- CSV de ejemplo -->
+<div class="card mt-4">
+    <div class="card-header fw-semibold" style="background:#fffbf0; color:#856404;">
+        <i class="bi bi-lightbulb-fill me-2"></i>Ejemplo de archivo CSV para importación
+    </div>
+    <div class="card-body">
+        <pre class="mb-0 p-3 rounded-3 small" style="background:#1e1e2e; color:#cdd6f4; overflow-x:auto; line-height:1.7;"><span style="color:#89b4fa;">titulo</span>,<span style="color:#89b4fa;">autor</span>,<span style="color:#89b4fa;">descripcion</span>,<span style="color:#89b4fa;">genero</span>,<span style="color:#89b4fa;">anio_publicacion</span>,<span style="color:#89b4fa;">isbn</span>,<span style="color:#89b4fa;">disponible</span>
+<span style="color:#a6e3a1;">Cien años de soledad</span>,<span style="color:#fab387;">Gabriel García Márquez</span>,Una saga familiar en Macondo,<span style="color:#f38ba8;">ficcion</span>,1967,978-84-376-0494-7,si
+<span style="color:#a6e3a1;">El nombre de la rosa</span>,<span style="color:#fab387;">Umberto Eco</span>,Misterio en un monasterio medieval,<span style="color:#f38ba8;">ficcion</span>,1980,978-84-322-1275-4,si
+<span style="color:#a6e3a1;">Cosmos</span>,<span style="color:#fab387;">Carl Sagan</span>,Divulgación científica del universo,<span style="color:#f38ba8;">ciencia</span>,1980,978-84-672-1850-8,no</pre>
+        <div class="mt-3">
+            <a href="{% url 'export_csv' %}" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-download me-1"></i>Descargar ejemplo (exportar catálogo actual)
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Filtro split para la plantilla (polyfill)
+</script>
+{% endblock %}

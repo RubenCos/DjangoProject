@@ -1,0 +1,96 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}{{ libro.titulo }} — Biblioteca Digital{% endblock %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'libro_list' %}">Catálogo</a></li>
+        <li class="breadcrumb-item active">{{ libro.titulo|truncatechars:40 }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <!-- Cabecera -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="badge bg-primary badge-genero mb-2">{{ libro.get_genero_display }}</span>
+                        <h2 class="fw-bold mb-1" style="color:#1a2a5e;">{{ libro.titulo }}</h2>
+                        <p class="text-muted fs-5 mb-0">
+                            <i class="bi bi-person-fill me-1"></i>{{ libro.autor }}
+                        </p>
+                    </div>
+                    {% if libro.disponible %}
+                    <span class="badge bg-success fs-6 px-3 py-2">
+                        <i class="bi bi-check-circle-fill me-1"></i>Disponible
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger fs-6 px-3 py-2">
+                        <i class="bi bi-x-circle-fill me-1"></i>No disponible
+                    </span>
+                    {% endif %}
+                </div>
+
+                <hr>
+
+                <!-- Descripción -->
+                <h6 class="fw-semibold text-muted text-uppercase small mb-2">
+                    <i class="bi bi-text-paragraph me-1"></i>Descripción
+                </h6>
+                {% if libro.descripcion %}
+                <p class="mb-0" style="line-height:1.8;">{{ libro.descripcion }}</p>
+                {% else %}
+                <p class="text-muted fst-italic mb-0">Este libro no tiene descripción.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel lateral -->
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-header fw-semibold" style="background:#f0f4ff; color:#1a2a5e;">
+                <i class="bi bi-info-circle me-2"></i>Detalles
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted small">Año publicación</span>
+                    <span class="fw-semibold">{{ libro.anio_publicacion|default:"—" }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted small">ISBN</span>
+                    <span class="fw-semibold font-monospace">{{ libro.isbn|default:"—" }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted small">Género</span>
+                    <span class="fw-semibold">{{ libro.get_genero_display }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted small">Fecha de alta</span>
+                    <span class="fw-semibold small">{{ libro.fecha_creacion|date:"d/m/Y H:i" }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Acciones -->
+        <div class="card">
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'libro_edit' libro.pk %}" class="btn btn-warning fw-semibold">
+                    <i class="bi bi-pencil-fill me-2"></i>Editar libro
+                </a>
+                <a href="{% url 'libro_delete' libro.pk %}" class="btn btn-outline-danger">
+                    <i class="bi bi-trash-fill me-2"></i>Eliminar libro
+                </a>
+                <a href="{% url 'libro_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Volver al catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

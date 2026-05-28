@@ -1,0 +1,111 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}{{ accion }} libro — Biblioteca Digital{% endblock %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'libro_list' %}">Catálogo</a></li>
+        {% if libro %}
+        <li class="breadcrumb-item"><a href="{% url 'libro_detail' libro.pk %}">{{ libro.titulo|truncatechars:30 }}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active">{{ accion }} libro</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header py-3" style="background:linear-gradient(135deg,#1a2a5e,#3a5a9b); color:white;">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-{% if accion == 'Añadir' %}plus-circle{% else %}pencil-square{% endif %} me-2"></i>
+                    {{ accion }} libro
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Fila 1: Título y Autor -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-7">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-type me-1 text-primary"></i>{{ form.titulo.label }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            {{ form.titulo }}
+                            {% if form.titulo.errors %}
+                            <div class="text-danger small mt-1">{{ form.titulo.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-person me-1 text-primary"></i>{{ form.autor.label }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            {{ form.autor }}
+                            {% if form.autor.errors %}
+                            <div class="text-danger small mt-1">{{ form.autor.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-text-paragraph me-1 text-primary"></i>{{ form.descripcion.label }}
+                        </label>
+                        {{ form.descripcion }}
+                    </div>
+
+                    <!-- Fila 3: Género, Año, ISBN -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-tag me-1 text-primary"></i>{{ form.genero.label }}
+                            </label>
+                            {{ form.genero }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-calendar3 me-1 text-primary"></i>{{ form.anio_publicacion.label }}
+                            </label>
+                            {{ form.anio_publicacion }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-upc me-1 text-primary"></i>{{ form.isbn.label }}
+                            </label>
+                            {{ form.isbn }}
+                        </div>
+                    </div>
+
+                    <!-- Disponible -->
+                    <div class="mb-4 p-3 rounded-3" style="background:#f0f4ff;">
+                        <div class="form-check">
+                            {{ form.disponible }}
+                            <label class="form-check-label fw-semibold ms-2" for="{{ form.disponible.id_for_label }}">
+                                <i class="bi bi-check-circle me-1 text-success"></i>{{ form.disponible.label }}
+                            </label>
+                        </div>
+                        <div class="text-muted small mt-1 ms-4">Indica si el libro está disponible para préstamo.</div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-save-fill me-2"></i>Guardar
+                        </button>
+                        <a href="{% if libro %}{% url 'libro_detail' libro.pk %}{% else %}{% url 'libro_list' %}{% endif %}"
+                           class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-x-lg me-2"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

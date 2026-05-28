@@ -1,0 +1,9 @@
+titulo,autor,descripcion,genero,anio_publicacion,isbn,disponible
+El Quijote,Miguel de Cervantes,La obra cumbre de la literatura española sobre un hidalgo que enloquece leyendo libros de caballerías.,ficcion,1605,978-84-376-0494-7,si
+1984,George Orwell,Novela distópica sobre un régimen totalitario que controla el pensamiento y la historia.,ficcion,1949,978-84-663-2179-7,si
+Cien años de soledad,Gabriel García Márquez,Saga familiar de los Buendía en el ficticio pueblo de Macondo.,ficcion,1967,978-84-397-2077-4,si
+Breve historia del tiempo,Stephen Hawking,Explicación accesible del origen del universo y los agujeros negros.,ciencia,1988,978-84-08-10829-5,si
+El arte de la guerra,Sun Tzu,Tratado militar chino sobre estrategia y táctica.,historia,500,,si
+Clean Code,Robert C. Martin,Guía de buenas prácticas para escribir código limpio y mantenible.,tecnologia,2008,978-0-13-235088-4,no
+Sapiens,Yuval Noah Harari,Historia de la humanidad desde los primeros humanos hasta la actualidad.,historia,2011,978-84-9992-395-0,si
+Python Crash Course,Eric Matthes,Introducción práctica a la programación con Python para principiantes.,tecnologia,2019,978-1-59327-928-8,si

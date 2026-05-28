@@ -1,0 +1,95 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}Catálogo — Biblioteca Digital{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-title">
+    <small>// CATÁLOGO</small>
+    Libros registrados
+  </div>
+  <!--Botón de crear los libros-->
+  <a href="{% url 'crear_libro' %}" class="btn btn-primary">＋ Añadir libro</a>
+</div>
+
+
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="num">{{ total }}</div>
+    <div class="label">TOTAL LIBROS</div>
+  </div>
+  <div class="stat-card">
+    <div class="num">{{ disponibles }}</div>
+    <div class="label">DISPONIBLES</div>
+  </div>
+  <div class="stat-card">
+    <div class="num">{{ no_disponibles|default:"0" }}</div>
+    <div class="label">NO DISPONIBLES</div>
+  </div>
+</div>
+
+<form method="get" class="search-bar">
+  <input type="text" name="q" value="{{ query }}" placeholder="Buscar por título o autor…">
+  <select name="genero">
+    <option value="">— Todos los géneros —</option>
+    {% for val, label in generos %}
+      <option value="{{ val }}" {% if genero_sel == val %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-secondary">Buscar</button>
+  {% if query or genero_sel %}
+    <a href="{% url 'lista_libros' %}" class="btn btn-ghost">✕ Limpiar</a>
+  {% endif %}
+</form>
+
+<div class="table-wrap">
+  {% if libros %}
+  <table>
+    <thead>
+      <tr>
+        <th>Título / Autor</th>
+        <th>Género</th>
+        <th>Año</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for libro in libros %}
+      <tr>
+        <td data-label="Libro">
+          <div class="td-titulo">{{ libro.titulo }}</div>
+          <div class="td-autor">{{ libro.autor }}</div>
+        </td>
+        <td data-label="Género">
+          <span class="badge badge-genre">{{ libro.get_genero_display }}</span>
+        </td>
+        <td data-label="Año">{{ libro.anio_publicacion|default:"—" }}</td>
+        <td data-label="Estado">
+          {% if libro.disponible %}
+            <span class="badge badge-green">Disponible</span>
+          {% else %}
+            <span class="badge badge-red">No disponible</span>
+          {% endif %}
+        </td>
+        <td data-label="Acciones">
+          <div class="row-actions">
+            <a href="{% url 'detalle_libro' libro.pk %}" class="btn btn-ghost btn-sm">Ver</a>
+            <a href="{% url 'editar_libro' libro.pk %}" class="btn btn-secondary btn-sm">Editar</a>
+            <a href="{% url 'eliminar_libro' libro.pk %}" class="btn btn-danger btn-sm">✕</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">📭</div>
+    <p>No hay libros que coincidan con la búsqueda.</p>
+    <a href="{% url 'crear_libro' %}" class="btn btn-primary">Añadir el primero</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
